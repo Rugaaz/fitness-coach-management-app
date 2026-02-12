@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pagehead">
+  <div>
+    <h1>
+      {% if mode == "create" %}New Check-in{% else %}Edit Check-in{% endif %}
+    </h1>
+    <p class="muted">Client: <a class="link" href="{{ url_for('main.client_detail', client_id=client.id) }}">{{ client.full_name }}</a></p>
+  </div>
+</div>
+
+<div class="card">
+  <form method="post"
+        action="{% if mode == 'create' %}{{ url_for('main.checkin_create', client_id=client.id) }}{% else %}{{ url_for('main.checkin_update', checkin_id=checkin.id) }}{% endif %}">
+    <div class="form-grid">
+      <div class="field">
+        <label for="date">Date *</label>
+        <input id="date" name="date" type="date" required
+               value="{{ checkin.date if checkin else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="weight_kg">Weight (kg)</label>
+        <input id="weight_kg" name="weight_kg" type="number" step="0.1"
+               value="{{ checkin.weight_kg if checkin and checkin.weight_kg is not none else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="bodyfat_pct">Body fat (%)</label>
+        <input id="bodyfat_pct" name="bodyfat_pct" type="number" step="0.1"
+               value="{{ checkin.bodyfat_pct if checkin and checkin.bodyfat_pct is not none else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="waist_cm">Waist (cm)</label>
+        <input id="waist_cm" name="waist_cm" type="number" step="0.1"
+               value="{{ checkin.waist_cm if checkin and checkin.waist_cm is not none else '' }}" />
+      </div>
+
+      <div class="field field-span-2">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="5"
+          placeholder="Energy, performance, sleep, stress, photos, etc.">{{ checkin.notes if checkin and checkin.notes else '' }}</textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">
+        {% if mode == "create" %}Add Check-in{% else %}Save Changes{% endif %}
+      </button>
+      <a class="btn btn-ghost" href="{{ url_for('main.client_detail', client_id=client.id) }}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

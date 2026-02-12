@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pagehead">
+  <div>
+    <h1>
+      {% if mode == "create" %}New Client{% else %}Edit Client{% endif %}
+    </h1>
+    <p class="muted">Basic client details for coaching management.</p>
+  </div>
+</div>
+
+<div class="card">
+  <form method="post"
+        action="{% if mode == 'create' %}{{ url_for('main.client_create') }}{% else %}{{ url_for('main.client_update', client_id=client.id) }}{% endif %}">
+    <div class="form-grid">
+      <div class="field">
+        <label for="full_name">Full name *</label>
+        <input id="full_name" name="full_name" required
+               value="{{ client.full_name if client else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="start_date">Start date</label>
+        <input id="start_date" name="start_date" type="date"
+               value="{{ client.start_date if client else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email"
+               value="{{ client.email if client else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone"
+               value="{{ client.phone if client else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="height_cm">Height (cm)</label>
+        <input id="height_cm" name="height_cm" type="number" min="0"
+               value="{{ client.height_cm if client and client.height_cm else '' }}" />
+      </div>
+
+      <div class="field field-span-2">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="5"
+          placeholder="Goals, injuries, preferences, lifestyle, etc.">{{ client.notes if client and client.notes else '' }}</textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">
+        {% if mode == "create" %}Create Client{% else %}Save Changes{% endif %}
+      </button>
+      <a class="btn btn-ghost" href="{{ url_for('main.clients_list') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% if mode == "edit" %}
+  <div class="card danger">
+    <h3>Danger zone</h3>
+    <p class="muted">Deleting a client will remove their check-ins, sessions, and plans.</p>
+    <form method="post" action="{{ url_for('main.client_delete', client_id=client.id) }}"
+          onsubmit="return confirm('Delete this client and all related records?');">
+      <button class="btn btn-danger" type="submit">Delete Client</button>
+    </form>
+  </div>
+{% endif %}
+
+{% endblock %}

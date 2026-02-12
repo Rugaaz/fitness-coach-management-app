@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pagehead">
+  <div>
+    <h1>
+      {% if mode == "create" %}New Training Plan{% else %}Edit Training Plan{% endif %}
+    </h1>
+    <p class="muted">Client: <a class="link" href="{{ url_for('main.client_detail', client_id=client.id) }}">{{ client.full_name }}</a></p>
+  </div>
+</div>
+
+<div class="card">
+  <form method="post"
+        action="{% if mode == 'create' %}{{ url_for('main.plan_create', client_id=client.id) }}{% else %}{{ url_for('main.plan_update', plan_id=plan.id) }}{% endif %}">
+    <div class="form-grid">
+      <div class="field">
+        <label for="title">Title *</label>
+        <input id="title" name="title" required placeholder="8 Week Hypertrophy Block"
+               value="{{ plan.title if plan else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="goal">Goal</label>
+        <input id="goal" name="goal" placeholder="Fat loss / Muscle gain / Strength"
+               value="{{ plan.goal if plan and plan.goal else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="start_date">Start date</label>
+        <input id="start_date" name="start_date" type="date"
+               value="{{ plan.start_date if plan and plan.start_date else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="end_date">End date</label>
+        <input id="end_date" name="end_date" type="date"
+               value="{{ plan.end_date if plan and plan.end_date else '' }}" />
+      </div>
+
+      <div class="field field-span-2">
+        <label for="plan_text">Plan text</label>
+        <textarea id="plan_text" name="plan_text" rows="10"
+          placeholder="Week 1-4: ...&#10;Day 1: ...&#10;Progressions: ...">{{ plan.plan_text if plan and plan.plan_text else '' }}</textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">
+        {% if mode == "create" %}Add Plan{% else %}Save Changes{% endif %}
+      </button>
+      <a class="btn btn-ghost" href="{{ url_for('main.client_detail', client_id=client.id) }}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

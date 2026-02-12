@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pagehead">
+  <div>
+    <h1>Clients</h1>
+    <p class="muted">Search, manage, and open a client dashboard.</p>
+  </div>
+  <div>
+    <a class="btn" href="{{ url_for('main.client_new') }}">+ Add Client</a>
+  </div>
+</div>
+
+<form class="card form-row" method="get" action="{{ url_for('main.clients_list') }}">
+  <div class="field" style="flex: 1;">
+    <label for="q">Search by name</label>
+    <input id="q" name="q" placeholder="e.g. John Smith" value="{{ q }}" />
+  </div>
+  <div class="field" style="align-self: end;">
+    <button class="btn" type="submit">Search</button>
+    <a class="btn btn-ghost" href="{{ url_for('main.clients_list') }}">Clear</a>
+  </div>
+</form>
+
+<div class="grid">
+  {% for c in clients %}
+    <a class="card card-link" href="{{ url_for('main.client_detail', client_id=c.id) }}">
+      <div class="card-title">{{ c.full_name }}</div>
+      <div class="muted">
+        {% if c.email %}{{ c.email }}{% endif %}
+        {% if c.email and c.phone %} • {% endif %}
+        {% if c.phone %}{{ c.phone }}{% endif %}
+      </div>
+      <div class="pill-row">
+        <span class="pill">Start: {{ c.start_date }}</span>
+        {% if c.height_cm %}
+          <span class="pill">{{ c.height_cm }} cm</span>
+        {% endif %}
+      </div>
+    </a>
+  {% else %}
+    <div class="card">
+      <p>No clients yet. Create your first client.</p>
+      <a class="btn" href="{{ url_for('main.client_new') }}">+ Add Client</a>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

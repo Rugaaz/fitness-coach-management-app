@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pagehead">
+  <div>
+    <h1>{{ client.full_name }}</h1>
+    <p class="muted">
+      {% if client.email %}{{ client.email }}{% endif %}
+      {% if client.email and client.phone %} • {% endif %}
+      {% if client.phone %}{{ client.phone }}{% endif %}
+      {% if client.height_cm %} • {{ client.height_cm }} cm{% endif %}
+      • Started: {{ client.start_date }}
+    </p>
+  </div>
+
+  <div class="row">
+    <a class="btn btn-ghost" href="{{ url_for('main.client_edit', client_id=client.id) }}">Edit Client</a>
+    <a class="btn" href="{{ url_for('main.checkin_new', client_id=client.id) }}">+ Check-in</a>
+    <a class="btn" href="{{ url_for('main.session_new', client_id=client.id) }}">+ Session</a>
+    <a class="btn" href="{{ url_for('main.plan_new', client_id=client.id) }}">+ Plan</a>
+  </div>
+</div>
+
+{% if client.notes %}
+  <div class="card">
+    <h3>Notes</h3>
+    <p class="prewrap">{{ client.notes }}</p>
+  </div>
+{% endif %}
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-head">
+      <h3>Progress Check-ins</h3>
+      <a class="btn btn-small" href="{{ url_for('main.checkin_new', client_id=client.id) }}">+ Add</a>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Weight</th>
+            <th>BF%</th>
+            <th>Waist</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for ci in checkins %}
+          <tr>
+            <td>{{ ci.date }}</td>
+            <td>{{ (ci.weight_kg ~ " kg") if ci.weight_kg is not none else "-" }}</td>
+            <td>{{ (ci.bodyfat_pct ~ "%") if ci.bodyfat_pct is not none else "-" }}</td>
+            <td>{{ (ci.waist_cm ~ " cm") if ci.waist_cm is not none else "-" }}</td>
+            <td class="td-actions">
+              <a class="link" href="{{ url_for('main.checkin_edit', checkin_id=ci.id) }}">Edit</a>
+              <form method="post" action="{{ url_for('main.checkin_delete', checkin_id=ci.id) }}"
+                    onsubmit="return confirm('Delete this check-in?');">
+                <button class="link danger-link" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% if ci.notes %}
+            <tr class="subrow">
+              <td colspan="5"><div class="muted prewrap">{{ ci.notes }}</div></td>
+            </tr>
+          {% endif %}
+        {% else %}
+          <tr><td colspan="5" class="muted">No check-ins yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Session History</h3>
+      <a class="btn btn-small" href="{{ url_for('main.session_new', client_id=client.id) }}">+ Add</a>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Duration</th>
+            <th>RPE</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for s in sessions %}
+          <tr>
+            <td>{{ s.date }}</td>
+            <td>{{ s.session_type if s.session_type else "-" }}</td>
+            <td>{{ (s.duration_min ~ " min") if s.duration_min is not none else "-" }}</td>
+            <td>{{ s.rpe if s.rpe is not none else "-" }}</td>
+            <td class="td-actions">
+              <a class="link" href="{{ url_for('main.session_edit', session_id=s.id) }}">Edit</a>
+              <form method="post" action="{{ url_for('main.session_delete', session_id=s.id) }}"
+                    onsubmit="return confirm('Delete this session?');">
+                <button class="link danger-link" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% if s.notes %}
+            <tr class="subrow">
+              <td colspan="5"><div class="muted prewrap">{{ s.notes }}</div></td>
+            </tr>
+          {% endif %}
+        {% else %}
+          <tr><td colspan="5" class="muted">No sessions yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <h3>Training Plans</h3>
+    <a class="btn btn-small" href="{{ url_for('main.plan_new', client_id=client.id) }}">+ Add</a>
+  </div>
+
+  <div class="plans">
+    {% for p in plans %}
+      <div class="plan">
+        <div class="plan-top">
+          <div>
+            <div class="card-title">{{ p.title }}</div>
+            <div class="muted">
+              {% if p.goal %}Goal: {{ p.goal }}{% endif %}
+              {% if p.goal and (p.start_date or p.end_date) %} • {% endif %}
+              {% if p.start_date %}{{ p.start_date }}{% endif %}
+              {% if p.start_date and p.end_date %} → {% endif %}
+              {% if p.end_date %}{{ p.end_date }}{% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <a class="btn btn-small btn-ghost" href="{{ url_for('main.plan_edit', plan_id=p.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('main.plan_delete', plan_id=p.id) }}"
+                  onsubmit="return confirm('Delete this plan?');">
+              <button class="btn btn-small btn-danger" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+        {% if p.plan_text %}
+          <div class="prewrap plan-text">{{ p.plan_text }}</div>
+        {% else %}
+          <div class="muted">No plan text.</div>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="muted">No plans yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

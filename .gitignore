@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Flask instance folder + sqlite DB
+instance/
+*.db
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/

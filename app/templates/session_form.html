@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="pagehead">
+  <div>
+    <h1>
+      {% if mode == "create" %}New Session{% else %}Edit Session{% endif %}
+    </h1>
+    <p class="muted">Client: <a class="link" href="{{ url_for('main.client_detail', client_id=client.id) }}">{{ client.full_name }}</a></p>
+  </div>
+</div>
+
+<div class="card">
+  <form method="post"
+        action="{% if mode == 'create' %}{{ url_for('main.session_create', client_id=client.id) }}{% else %}{{ url_for('main.session_update', session_id=session_obj.id) }}{% endif %}">
+    <div class="form-grid">
+      <div class="field">
+        <label for="date">Date *</label>
+        <input id="date" name="date" type="date" required
+               value="{{ session_obj.date if session_obj else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="session_type">Type</label>
+        <input id="session_type" name="session_type" placeholder="Upper / Lower / Posing / Consult"
+               value="{{ session_obj.session_type if session_obj and session_obj.session_type else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="duration_min">Duration (min)</label>
+        <input id="duration_min" name="duration_min" type="number" min="0"
+               value="{{ session_obj.duration_min if session_obj and session_obj.duration_min is not none else '' }}" />
+      </div>
+
+      <div class="field">
+        <label for="rpe">RPE (1–10)</label>
+        <input id="rpe" name="rpe" type="number" min="1" max="10"
+               value="{{ session_obj.rpe if session_obj and session_obj.rpe is not none else '' }}" />
+      </div>
+
+      <div class="field field-span-2">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="5"
+          placeholder="What was done, performance, pain/injuries, next steps...">{{ session_obj.notes if session_obj and session_obj.notes else '' }}</textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">
+        {% if mode == "create" %}Add Session{% else %}Save Changes{% endif %}
+      </button>
+      <a class="btn btn-ghost" href="{{ url_for('main.client_detail', client_id=client.id) }}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
