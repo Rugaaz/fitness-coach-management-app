@@ -3,15 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ title if title else "Fitness Coaching Manager" }}</title>
+  <title>{{ title if title else "Ascend Society Coach Dashboard" }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
 <body>
   <header class="topbar">
     <div class="container topbar-inner">
       <a class="brand" href="{{ url_for('main.clients_list') }}">
-        Fitness Coaching Manager
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Ascend Society Logo" class="brand-logo">
+        <div class="brand-text-wrap">
+          <span class="brand-text">ASCEND</span>
+          <span class="brand-subtext">SOCIETY</span>
+        </div>
       </a>
+
       <nav class="nav">
         <a href="{{ url_for('main.clients_list') }}">Clients</a>
         <a class="btn btn-small" href="{{ url_for('main.client_new') }}">+ New Client</a>
@@ -35,7 +40,7 @@
 
   <footer class="footer">
     <div class="container">
-      <small>Built with Flask + SQLite</small>
+      <small>Ascend Society Coaching System</small>
     </div>
   </footer>
 </body>

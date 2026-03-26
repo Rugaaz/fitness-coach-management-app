@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <h1>Client Portal</h1>
+    <p class="muted">Log in to view your plan, sessions, and progress.</p>
+
+    <form method="post" action="{{ url_for('main.client_login') }}">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit">Login</button>
+        <a class="btn btn-secondary" href="{{ url_for('main.admin_login') }}">Admin</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
